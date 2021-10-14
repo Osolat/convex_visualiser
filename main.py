@@ -1,6 +1,5 @@
 import matplotlib.pyplot as plt
-from os import walk
-import numpy as np
+
 
 def visualise():
     inputPointsX = []
