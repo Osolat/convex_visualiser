@@ -1,0 +1,4 @@
+SQUARE: 1693, 1, 2, 
+CIRCLE: 911, 1, 2, 
+LOG: 481, 1, 2, 
+QUADRATIC: 412, 1, 2, 
