@@ -1,7 +1,8 @@
+from os import walk
 import matplotlib.pyplot as plt
+import numpy as np
 
-
-labels = list(range(1, 20))
+labels = list(range(1, 25))
 labels = [str(x) for x in labels]
 
 
@@ -335,15 +336,10 @@ def plot_GW_runtime_hulladjusted():
     log_means = []
     quad_means = []
     for filename in f:
-        if "comparison" not in filename:
+        if "GW" not in filename:
             continue
         with open("./data/" + filename) as file:
             for line in file:
-                if "GW" in line or "GH" in line or "MBQ" in line:
-                    alg = line.strip()
-                    continue
-                if alg != "GW":
-                    continue
                 test_class = line.split(":")[0]
                 total_run = int(line.split(":")[-1].split(",")[0])
                 if test_class == "SQUARE":
@@ -356,8 +352,8 @@ def plot_GW_runtime_hulladjusted():
                     quad_means.append(total_run)
 
     square_means = np.asarray(square_means)
-    exponents = np.power(2, np.asarray(labels).astype(np.int_))
-
+    exponents = np.power(2, np.asarray(labels[:len(square_means)]).astype(np.uint64))
+    a = (exponents * exponents)
     # runime/(n * n * 1/3)
     square_means = square_means / (exponents * exponents * 0.3)
     # runtime/(n * n * 1/3(
@@ -393,15 +389,10 @@ def plot_GW_runtime():
     log_means = []
     quad_means = []
     for filename in f:
-        if "comparison" not in filename:
+        if "GW" not in filename:
             continue
         with open("./data/" + filename) as file:
             for line in file:
-                if "GW" in line or "GH" in line or "MBQ" in line:
-                    alg = line.strip()
-                    continue
-                if alg != "GW":
-                    continue
                 test_class = line.split(":")[0]
                 total_run = int(line.split(":")[-1].split(",")[0])
                 if test_class == "SQUARE":
@@ -412,7 +403,7 @@ def plot_GW_runtime():
                     log_means.append(total_run)
                 if test_class == "QUADRATIC":
                     quad_means.append(total_run)
-
+    plt.yscale('log')
     plt.plot(labels[:len(square_means)], square_means, color='red', label='SQUARE', marker="x")
     plt.plot(labels[:len(square_means)], circle_means, color='blue', label='CIRCLE', marker="x")
     plt.plot(labels[:len(square_means)], log_means, color='green', label='LOG', marker="x")
@@ -521,6 +512,9 @@ def plot_GH():
     circle_means = []
     log_means = []
     quad_means = []
+    shuf_quad_means = []
+    shuf_log_means = []
+
     for filename in f:
         if "GH" not in filename:
             continue
@@ -536,11 +530,18 @@ def plot_GH():
                     log_means.append(total_run)
                 if test_class == "QUADRATIC":
                     quad_means.append(total_run)
+                if test_class == "SHUFFLEDLOG":
+                    shuf_log_means.append(total_run)
+                if test_class == "SHUFFLEDQUAD":
+                    shuf_quad_means.append(total_run)
+
     plt.yscale('log')
-    plt.plot(labels[:18], square_means, color='red', label='SQUARE', marker="x")
-    plt.plot(labels[:18], circle_means, color='blue', label='CIRCLE', marker="x")
-    plt.plot(labels[:18], log_means, color='green', label='LOG', marker="x")
-    plt.plot(labels[:18], quad_means, color='purple', label='QUADRATIC', marker="x")
+    plt.plot(labels[:len(square_means)], square_means, color='red', label='SQUARE', marker="x")
+    plt.plot(labels[:len(square_means)], circle_means, color='blue', label='CIRCLE', marker="x")
+    plt.plot(labels[:len(square_means)], log_means, color='green', label='LOG', marker="x")
+    plt.plot(labels[:len(square_means)], quad_means, color='purple', label='QUADRATIC', marker="x")
+    plt.plot(labels[:len(square_means)], shuf_quad_means, color='black', label='RANDOMISED QUAD', marker="x")
+    plt.plot(labels[:len(square_means)], shuf_log_means, color='yellow', label='RANDOMISED LOG', marker="x")
 
     plt.xlabel('figure size $\mathregular{(2^x = n)}$', fontweight='bold')
     plt.ylabel("ns")
@@ -583,4 +584,5 @@ def visualise():
 
 
 if __name__ == '__main__':
-    visualise()
+    plot_GW_runtime_hulladjusted()
+
