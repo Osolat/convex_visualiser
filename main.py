@@ -580,9 +580,10 @@ def visualise():
 
     plt.scatter(inputPointsX, inputPointsXY, c="green")
     plt.scatter(hullX, hullY, c="r")
+    #plt.xticks(np.arange(min(inputPointsX), max(inputPointsX), 0.1))
     plt.show()
 
 
 if __name__ == '__main__':
-    plot_GW_runtime_hulladjusted()
+    visualise()
 
